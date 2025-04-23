@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wyckoff Trading Assistant - Pattern Analyzer</title>
+    <link rel="stylesheet" href="styles/wyckoff-analyzer.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Load LightweightCharts library directly -->
+    <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.0.1/dist/lightweight-charts.standalone.production.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="/wyckoff-logo.svg" alt="Wyckoff Trading Assistant Logo">
+                    <h1>Wyckoff Trading Assistant</h1>
+                </div>
+                <nav class="nav">
+                    <ul>
+                        <li><a href="/" class="nav-link">Home</a></li>
+                        <li><a href="#" class="nav-link active">Pattern Analyzer</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>Wyckoff Pattern Analyzer</h1>
+                <p>Powered by a fine-tuned transformer model trained on Wyckoff methodology</p>
+            </div>
+        </section>
+
+        <section class="methodology">
+            <div class="container">
+                <h2>Understanding Wyckoff Methodology</h2>
+                <div class="methodology-grid">
+                    <div class="methodology-item">
+                        <h3>Accumulation</h3>
+                        <p>A period where smart money is accumulating positions from retail traders, typically at the end of a downtrend.</p>
+                        <img src="/wyckoff-accumulation.svg" alt="Accumulation Pattern">
+                    </div>
+                    <div class="methodology-item">
+                        <h3>Distribution</h3>
+                        <p>A period where smart money is distributing positions to retail traders, typically at the end of an uptrend.</p>
+                        <img src="/wyckoff-distribution.svg" alt="Distribution Pattern">
+                    </div>
+                    <div class="methodology-item">
+                        <h3>Spring</h3>
+                        <p>A price movement below support that quickly reverses, trapping sellers and signaling potential accumulation.</p>
+                        <img src="/wyckoff-spring.svg" alt="Spring Pattern">
+                    </div>
+                    <div class="methodology-item">
+                        <h3>Upthrust</h3>
+                        <p>A price movement above resistance that quickly reverses, trapping buyers and signaling potential distribution.</p>
+                        <img src="/wyckoff-upthrust.svg" alt="Upthrust Pattern">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="analyzer">
+            <div class="container">
+                <div class="analyzer-controls">
+                    <div class="data-selector">
+                        <h3>Select Data</h3>
+                        <div class="selector-tabs">
+                            <button class="tab-btn active" data-tab="sample">Sample Data</button>
+                            <button class="tab-btn" data-tab="upload">Upload Data</button>
+                        </div>
+                        
+                        <div class="tab-content active" id="sample-tab">
+                            <div class="form-group">
+                                <label for="stock-select">Select Stock:</label>
+                                <select id="stock-select">
+                                    <option value="AAPL">Apple Inc. (AAPL)</option>
+                                    <option value="MSFT">Microsoft Corp. (MSFT)</option>
+                                    <option value="AMZN">Amazon.com Inc. (AMZN)</option>
+                                    <option value="GOOGL">Alphabet Inc. (GOOGL)</option>
+                                    <option value="TSLA">Tesla Inc. (TSLA)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="timeframe-select">Timeframe:</label>
+                                <select id="timeframe-select">
+                                    <option value="1D">Daily</option>
+                                    <option value="1W">Weekly</option>
+                                    <option value="1M">Monthly</option>
+                                </select>
+                            </div>
+                            <button id="load-sample-btn" class="btn btn-primary">Load Data</button>
+                        </div>
+                        
+                        <div class="tab-content" id="upload-tab">
+                            <div class="form-group">
+                                <label for="file-upload">Upload CSV or JSON file:</label>
+                                <input type="file" id="file-upload" accept=".csv,.json">
+                            </div>
+                            <div class="upload-info">
+                                <p>File must contain OHLCV data (Open, High, Low, Close, Volume) with dates.</p>
+                            </div>
+                            <button id="upload-btn" class="btn btn-primary">Upload & Analyze</button>
+                        </div>
+                    </div>
+                    
+                    <div class="analysis-settings">
+                        <h3>Analysis Settings</h3>
+                        <div class="form-group">
+                            <label for="confidence-threshold">Confidence Threshold:</label>
+                            <input type="range" id="confidence-threshold" min="0" max="100" value="70">
+                            <span id="confidence-value">70%</span>
+                        </div>
+                        <div class="form-group checkbox">
+                            <input type="checkbox" id="show-accumulation" checked>
+                            <label for="show-accumulation">Show Accumulation</label>
+                        </div>
+                        <div class="form-group checkbox">
+                            <input type="checkbox" id="show-distribution" checked>
+                            <label for="show-distribution">Show Distribution</label>
+                        </div>
+                        <div class="form-group checkbox">
+                            <input type="checkbox" id="show-spring" checked>
+                            <label for="show-spring">Show Spring</label>
+                        </div>
+                        <div class="form-group checkbox">
+                            <input type="checkbox" id="show-upthrust" checked>
+                            <label for="show-upthrust">Show Upthrust</label>
+                        </div>
+                        <button id="analyze-btn" class="btn btn-secondary">Analyze</button>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <div id="chart"></div>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <span class="legend-color accumulation"></span>
+                            <span class="legend-label">Accumulation</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color distribution"></span>
+                            <span class="legend-label">Distribution</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color spring"></span>
+                            <span class="legend-label">Spring</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color upthrust"></span>
+                            <span class="legend-label">Upthrust</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="analysis-results">
+                    <h3>Pattern Analysis Results</h3>
+                    <div class="results-container">
+                        <div class="loading-indicator" id="loading-indicator">
+                            <div class="spinner"></div>
+                            <p>Analyzing patterns...</p>
+                        </div>
+                        <div class="no-data-message" id="no-data-message">
+                            <p>No data loaded. Please select a stock or upload data to begin analysis.</p>
+                        </div>
+                        <div class="results-content" id="results-content">
+                            <div class="detected-patterns">
+                                <h4>Detected Patterns</h4>
+                                <div class="pattern-list" id="pattern-list">
+                                    <!-- Pattern items will be added here dynamically -->
+                                </div>
+                            </div>
+                            <div class="pattern-details" id="pattern-details">
+                                <h4>Pattern Details</h4>
+                                <div class="no-selection-message">
+                                    <p>Select a pattern from the list to view details</p>
+                                </div>
+                                <!-- Pattern details will be shown here when a pattern is selected -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="model-info">
+            <div class="container">
+                <h2>About the Model</h2>
+                <div class="model-grid">
+                    <div class="model-item">
+                        <h3>Transformer Architecture</h3>
+                        <p>Our model uses a custom transformer architecture specifically designed for financial time series data. It incorporates price-volume attention mechanisms and Wyckoff-specific feature extraction.</p>
+                    </div>
+                    <div class="model-item">
+                        <h3>Training Data</h3>
+                        <p>The model was trained on over 10 years of historical market data across multiple instruments, with expert-labeled Wyckoff patterns for supervised learning.</p>
+                    </div>
+                    <div class="model-item">
+                        <h3>Performance Metrics</h3>
+                        <p>The model achieves 87% accuracy in identifying Wyckoff patterns, with particularly strong performance on accumulation and distribution phases.</p>
+                    </div>
+                    <div class="model-item">
+                        <h3>Limitations</h3>
+                        <p>While powerful, the model is a tool to assist traders, not replace them. Always combine model insights with your own analysis and risk management.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="/wyckoff-logo.svg" alt="Wyckoff Trading Assistant Logo">
+                    <p>Wyckoff Trading Assistant</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Wyckoff Trading Assistant. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Move script tag to the end of the body and remove type="module" -->
+    <script src="scripts/wyckoff-analyzer.js"></script>
+</body>
+</html>
